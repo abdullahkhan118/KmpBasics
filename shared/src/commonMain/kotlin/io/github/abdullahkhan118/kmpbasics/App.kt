@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.*
 import androidx.navigation3.runtime.NavKey
@@ -59,23 +60,25 @@ fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         val viewModel: AppViewModel = viewModel(factory = viewModelFactory)
-        val backStack = remember { mutableStateListOf<Screen>(Screen.Home) }
+        val backStack by remember { mutableStateOf(BackStack<Screen>(Screen.Home)) }
+        val entries by backStack.entries.collectAsStateWithLifecycle()
 
 
         NavDisplay(
-            backStack = backStack,
-            onBack = { backStack.removeAt(backStack.lastIndex) },
+            backStack = entries,
+            onBack = { backStack.pop() },
             entryProvider = entryProvider {
                 entry<Screen.Home> {
+                    viewModel(AppViewModel::class)
                     Column(modifier = Modifier.safeContentPadding().fillMaxSize(), verticalArrangement = Arrangement.Center) {
                         Text("Home")
                         Button(onClick = {
-                            backStack.add(Screen.Greeting("Abdullah Khan"))
+                            backStack.push(Screen.Greeting("Abdullah Khan"))
                         }) {
                             Text("Greeting")
                         }
                         Button(onClick = {
-                            backStack.removeLastOrNull()
+                            backStack.pop()
                         }) {
                             Text("Back")
                         }
@@ -87,12 +90,12 @@ fun App() {
                         Text("Hello, ${screen.name}!")
                         TextField(state = greeting)
                         Button(onClick = {
-                            backStack.add(Screen.Greeting(greeting.text.toString()))
+                            backStack.push(Screen.Greeting(greeting.text.toString()))
                         }) {
                             Text("Greeting Another")
                         }
                         Button(onClick = {
-                            backStack.removeLastOrNull()
+                            backStack.pop()
                         }) {
                             Text("Back")
                         }

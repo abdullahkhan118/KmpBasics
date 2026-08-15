@@ -14,16 +14,26 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.*
+import io.github.abdullahkhan118.kmpbasics.viewmodel.AppViewModel
 import org.jetbrains.compose.resources.painterResource
 
 import kmpbasics.shared.generated.resources.Res
 import kmpbasics.shared.generated.resources.compose_multiplatform
+
+val viewModelFactory = viewModelFactory {
+    initializer {
+        AppViewModel()
+    }
+}
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
+        val viewModel: AppViewModel = viewModel(factory = viewModelFactory)
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
@@ -33,15 +43,16 @@ fun App() {
         ) {
             Button(onClick = { showContent = !showContent }) {
                 Text("Click me!")
+                viewModel.sayHello("Abdullah")
             }
             AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
+//                val greeting = remember { Greeting().greet() }
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+                    Text("Compose: ${viewModel.state.value}")
                 }
             }
         }

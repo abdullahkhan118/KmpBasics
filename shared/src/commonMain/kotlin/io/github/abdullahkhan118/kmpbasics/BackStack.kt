@@ -2,43 +2,45 @@ package io.github.abdullahkhan118.kmpbasics
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 class BackStack<T: Screen>(
     initialScreen: T,
+    private val onEmptyStack: () -> Unit
 ) {
 
-    val entries: StateFlow<List<T>> field = MutableStateFlow(mutableListOf(initialScreen))
+    val entries: SnapshotStateList<T> field = mutableStateListOf(initialScreen)
 
     fun push(screen: T, singleTop: Boolean = false) {
         if (singleTop) {
             popUntilFirst(screen)
         } else {
-            entries.value.add(screen)
+            entries.add(screen)
         }
     }
 
     fun pop() {
-        entries.value.removeLastOrNull()
+        if(entries.size == 1) {
+            onEmptyStack()
+            return
+        }
+        entries.removeLastOrNull()
     }
 
     fun popUpTo(screen: T) {
-        while (entries.value.isNotEmpty() && entries.value.last()::class != screen::class) {
-            entries.value.removeLastOrNull()
+        while (entries.isNotEmpty() && entries.last()::class != screen::class) {
+            entries.removeLastOrNull()
         }
     }
 
     fun popUntilFirst(screen: T) {
         val index =
-            entries.value.indexOfFirst { it::class == screen::class }.takeIf { it >= 0 } ?: run {
-                entries.value.add(screen)
+            entries.indexOfFirst { it::class == screen::class }.takeIf { it >= 0 } ?: run {
+                entries.add(screen)
                 return
             }
-        while (entries.value.isNotEmpty() && index != entries.value.size - 1) {
-            entries.value.removeLastOrNull()
+        while (entries.isNotEmpty() && index != entries.size - 1) {
+            entries.removeLastOrNull()
         }
     }
-
 
 }

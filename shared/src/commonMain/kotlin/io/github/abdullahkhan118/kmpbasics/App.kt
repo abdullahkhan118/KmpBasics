@@ -55,13 +55,14 @@ sealed class Screen : NavKey {
 
 
 @Composable
-@Preview
-fun App() {
+//@Preview
+fun App(
+    backStack: BackStack<Screen>,
+) {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         val viewModel: AppViewModel = viewModel(factory = viewModelFactory)
-        val backStack by remember { mutableStateOf(BackStack<Screen>(Screen.Home)) }
-        val entries by backStack.entries.collectAsStateWithLifecycle()
+        val entries = remember { backStack.entries }
 
 
         NavDisplay(

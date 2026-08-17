@@ -4,13 +4,14 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 
 class BackStack<T: Screen>(
-    initialScreen: T,
+    vararg initialScreen: T,
     private val onEmptyStack: () -> Unit
 ) {
-
-    val entries: SnapshotStateList<T> field = mutableStateListOf(initialScreen)
+    val entries: SnapshotStateList<T> field = mutableStateListOf(*initialScreen)
 
     fun push(screen: T, singleTop: Boolean = false) {
+//        if(entries.last().toString() == screen.toString()) return
+
         if (singleTop) {
             popUntilFirst(screen)
         } else {

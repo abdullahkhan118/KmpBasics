@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -46,6 +47,11 @@ kotlin {
             implementation(libs.compose.uiTooling)
         }
         commonMain.dependencies {
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.composeViewmodel)
+            implementation(libs.koin.annotations)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -68,4 +74,18 @@ kotlin {
 
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
+
+    add("kspAndroid", libs.koin.kspCompiler)
+    add("kspIosArm64", libs.koin.kspCompiler)
+    add("kspIosSimulatorArm64", libs.koin.kspCompiler)
+    add("kspCommonMainMetadata", libs.koin.kspCompiler)
+}
+
+// Let commonMain see the code KSP generates from @Module/@Single/etc.
+kotlin.sourceSets.commonMain {
+    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+}
+
+tasks.matching { it.name != "kspCommonMainKotlinMetadata" && it.name.startsWith("ksp") }.configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
 }

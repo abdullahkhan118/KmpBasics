@@ -45,6 +45,10 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
+            implementation(libs.ktor.client.android)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.koin.bom))
@@ -65,6 +69,19 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
             implementation(libs.jetbrains.material3.adaptiveNavigation3)
             implementation(libs.kotlinx.serialization.core)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
+            implementation(libs.ktor.client.core)
+
+            // Contains a tiny subset of standard icons (Home, Share, ArrowBack, etc.)
+            implementation(libs.compose.materialIconsCore)
+
+            // Contains the massive 10,000+ icon pack (Not recommended due to build lag)
+            implementation(compose.materialIconsExtended)
+
+            implementation(libs.paging.common)
+            implementation(libs.paging.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

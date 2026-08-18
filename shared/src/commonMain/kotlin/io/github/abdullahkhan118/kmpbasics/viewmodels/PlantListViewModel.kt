@@ -26,16 +26,17 @@ import org.koin.android.annotation.KoinViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * The ViewModel for plant list.
  */
 @KoinViewModel
 class PlantListViewModel internal constructor(
-    plantRepository: PlantRepository,
     private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
-
+) : ViewModel(), KoinComponent {
+    private val plantRepository: PlantRepository by inject()
     private val growZone: MutableStateFlow<Int> = MutableStateFlow(
         savedStateHandle.get(GROW_ZONE_SAVED_STATE_KEY) ?: NO_GROW_ZONE
     )

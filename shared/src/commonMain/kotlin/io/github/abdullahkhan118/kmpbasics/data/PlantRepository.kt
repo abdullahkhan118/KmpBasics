@@ -16,7 +16,12 @@
 
 package io.github.abdullahkhan118.kmpbasics.data
 
+import androidx.lifecycle.ViewModel
+import io.github.abdullahkhan118.kmpbasics.viewmodels.PlantDetailViewModel
+import io.github.abdullahkhan118.kmpbasics.viewmodels.PlantListViewModel
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Scope
+import org.koin.core.annotation.Scoped
 import org.koin.core.annotation.Singleton
 
 /**

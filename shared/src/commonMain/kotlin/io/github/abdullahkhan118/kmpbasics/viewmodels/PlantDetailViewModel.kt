@@ -21,12 +21,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.abdullahkhan118.kmpbasics.data.GardenPlantingRepository
 import io.github.abdullahkhan118.kmpbasics.data.PlantRepository
+import io.github.abdullahkhan118.kmpbasics.di.AppModule
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.android.annotation.KoinViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.ksp.generated.module
 
 /**
  * The ViewModel used in [PlantDetailsScreen].
@@ -34,9 +39,10 @@ import kotlinx.coroutines.launch
 @KoinViewModel
 class PlantDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    plantRepository: PlantRepository,
     private val gardenPlantingRepository: GardenPlantingRepository,
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
+
+    private val plantRepository: PlantRepository by inject()
 
     val plantId: String = savedStateHandle.get<String>(PLANT_ID_SAVED_STATE_KEY)!!
 

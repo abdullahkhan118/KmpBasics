@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.net.URI
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room3)
 }
 
 kotlin {
@@ -46,6 +48,9 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
             implementation(libs.ktor.client.android)
+
+            // Optional when using Room SQLite Wrapper
+            implementation(libs.androidx.room3.sqlite.wrapper)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -82,11 +87,22 @@ kotlin {
 
             implementation(libs.paging.common)
             implementation(libs.paging.compose)
+
+            implementation(libs.androidx.room3.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
     }
+}
+
+room3 {
+    schemaDirectory("$projectDir/schemas")
+}
+
+ksp {
+    arg("room.generateKotlin", "true")
 }
 
 dependencies {
@@ -96,6 +112,10 @@ dependencies {
     add("kspIosArm64", libs.koin.kspCompiler)
     add("kspIosSimulatorArm64", libs.koin.kspCompiler)
     add("kspCommonMainMetadata", libs.koin.kspCompiler)
+
+    add("kspAndroid", libs.androidx.room3.compiler)
+    add("kspIosArm64", libs.androidx.room3.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room3.compiler)
 }
 
 // Let commonMain see the code KSP generates from @Module/@Single/etc.
@@ -105,4 +125,20 @@ kotlin.sourceSets.commonMain {
 
 tasks.matching { it.name != "kspCommonMainKotlinMetadata" && it.name.startsWith("ksp") }.configureEach {
     dependsOn("kspCommonMainKotlinMetadata")
+}
+
+tasks.named("prepareComposeResourcesTaskForCommonMain") {
+    dependsOn("refreshConfigDefaults")
+}
+
+tasks.register("refreshConfigDefaults") {
+    val configDefaultsFile = layout.projectDirectory.file("src/commonMain/composeResources/files/config_defaults.json").asFile
+
+    doLast {
+        val response = URI("https://tomoe.bykea.net/api/v1/common/services").toURL().readText()
+        configDefaultsFile.parentFile?.mkdirs()
+        if (!configDefaultsFile.exists()) configDefaultsFile.createNewFile()
+        configDefaultsFile.writeText(response)
+        println("Config defaults: Updated")
+    }
 }

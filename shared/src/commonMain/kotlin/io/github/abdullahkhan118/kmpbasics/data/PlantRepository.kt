@@ -16,12 +16,7 @@
 
 package io.github.abdullahkhan118.kmpbasics.data
 
-import androidx.lifecycle.ViewModel
-import io.github.abdullahkhan118.kmpbasics.viewmodels.PlantDetailViewModel
-import io.github.abdullahkhan118.kmpbasics.viewmodels.PlantListViewModel
 import kotlinx.coroutines.flow.flow
-import org.koin.core.annotation.Scope
-import org.koin.core.annotation.Scoped
 import org.koin.core.annotation.Singleton
 
 /**
@@ -33,25 +28,14 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class PlantRepository (
-//    private val plantDao: PlantDao
+    private val plantDao: PlantDao
 ) {
 
-    fun getPlants() = flow { emit(emptyList<Plant>()) }
-//        plantDao.getPlants()
+    fun getPlants() = plantDao.getPlants()
 
-    fun getPlant(plantId: String) = flow { emit(Plant(plantId, "asdasd", "asda", 4)) }
-//        plantDao.getPlant(plantId)
+    fun getPlant(plantId: String) =
+        plantDao.getPlant(plantId)
 
-    fun getPlantsWithGrowZoneNumber(growZoneNumber: Int) = flow { emit(emptyList<Plant>()) }
-//        plantDao.getPlantsWithGrowZoneNumber(growZoneNumber)
-
-    companion object {
-
-        // For Singleton instantiation
-        val instance: PlantRepository by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-            PlantRepository(
-//                plantDao
-            )
-        }
-    }
+    fun getPlantsWithGrowZoneNumber(growZoneNumber: Int) =
+        plantDao.getPlantsWithGrowZoneNumber(growZoneNumber)
 }

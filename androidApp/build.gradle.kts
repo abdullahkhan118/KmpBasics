@@ -1,4 +1,6 @@
+import org.apache.tools.ant.taskdefs.Java
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.net.URI
 
 plugins {
     alias(libs.plugins.androidApplication)

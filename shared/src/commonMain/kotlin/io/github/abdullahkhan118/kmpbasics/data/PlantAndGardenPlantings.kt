@@ -16,17 +16,17 @@
 
 package io.github.abdullahkhan118.kmpbasics.data
 
-//import androidx.room.Embedded
-//import androidx.room.Relation
+import androidx.room3.Embedded
+import androidx.room3.Relation
 
 /**
  * This class captures the relationship between a [Plant] and a user's [GardenPlanting], which is
  * used by Room to fetch the related entities.
  */
 data class PlantAndGardenPlantings(
-//    @Embedded
+    @Embedded
     val plant: Plant,
 
-//    @Relation(parentColumn = "id", entityColumn = "plant_id")
+    @Relation(parentColumns = ["id"], entityColumns = ["plant_id"])
     val gardenPlantings: List<GardenPlanting> = emptyList()
 )

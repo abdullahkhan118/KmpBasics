@@ -1,43 +1,67 @@
-///*
-// * Copyright 2018 Google LLC
-// *
-// * Licensed under the Apache License, Version 2.0 (the "License");
-// * you may not use this file except in compliance with the License.
-// * You may obtain a copy of the License at
-// *
-// *     https://www.apache.org/licenses/LICENSE-2.0
-// *
-// * Unless required by applicable law or agreed to in writing, software
-// * distributed under the License is distributed on an "AS IS" BASIS,
-// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// * See the License for the specific language governing permissions and
-// * limitations under the License.
-// */
+/*
+ * Copyright 2018 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.github.abdullahkhan118.kmpbasics.data
+
+import androidx.room3.ColumnTypeConverters
+import androidx.room3.ConstructedBy
+import androidx.room3.Database
+import androidx.room3.RoomDatabase
+import androidx.room3.RoomDatabaseConstructor
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+
+/**
+ * The Room database for this app
+ */
+
+// shared/src/commonMain/kotlin/Database.kt
+
+@Database(entities = [GardenPlanting::class, Plant::class], version = 1, exportSchema = false)
+@ColumnTypeConverters(Converters::class)
+@ConstructedBy(AppDatabaseConstructor::class)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun gardenPlantingDao(): GardenPlantingDao
+    abstract fun plantDao(): PlantDao
+}
+
+// The Room compiler generates the `actual` implementations.
+
+@Suppress("NO_ACTUAL_FOR_EXPECT")
+expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
+    override fun initialize(): AppDatabase
+}
+
+// shared/src/commonMain/kotlin/Database.kt
+
+fun getRoomDatabase(
+    builder: RoomDatabase.Builder<AppDatabase>
+): AppDatabase {
+    return builder
+        .setDriver(BundledSQLiteDriver())
+        .setQueryCoroutineContext(Dispatchers.IO)
+        .build()
+}
+
+
 //
-//package io.github.abdullahkhan118.kmpbasics.data
 //
-//import android.content.Context
-//import androidx.room.Database
-//import androidx.room.Room
-//import androidx.room.RoomDatabase
-//import androidx.room.TypeConverters
-//import androidx.sqlite.db.SupportSQLiteDatabase
-//import androidx.work.OneTimeWorkRequestBuilder
-//import androidx.work.WorkManager
-//import androidx.work.workDataOf
-//import io.github.abdullahkhan118.kmpbasics.utilities.DATABASE_NAME
-//import io.github.abdullahkhan118.kmpbasics.utilities.PLANT_DATA_FILENAME
-//import io.github.abdullahkhan118.kmpbasics.workers.SeedDatabaseWorker
-//import io.github.abdullahkhan118.kmpbasics.workers.SeedDatabaseWorker.Companion.KEY_FILENAME
 //
-///**
-// * The Room database for this app
-// */
-//@Database(entities = [GardenPlanting::class, Plant::class], version = 1, exportSchema = false)
-//@TypeConverters(Converters::class)
 //abstract class AppDatabase : RoomDatabase() {
-//    abstract fun gardenPlantingDao(): GardenPlantingDao
-//    abstract fun plantDao(): PlantDao
 //
 //    companion object {
 //

@@ -18,29 +18,24 @@ package io.github.abdullahkhan118.kmpbasics.data
 
 import kotlinx.datetime.DateTimePeriod
 
-//import androidx.room.ColumnInfo
-//import androidx.room.Entity
-//import androidx.room.PrimaryKey
-//import java.util.Calendar
-//import java.util.Calendar.DAY_OF_YEAR
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 
-//@Entity(tableName = "plants")
+@Entity(tableName = "plants")
 data class Plant(
-//    @PrimaryKey @ColumnInfo(name = "id")
+    @PrimaryKey @ColumnInfo(name = "id")
     val plantId: String,
     val name: String,
     val description: String,
     val growZoneNumber: Int,
     val wateringInterval: Int = 7, // how often the plant should be watered, in days
     val imageUrl: String = ""
-) {
+)
 
-    /**
-     * Determines if the plant should be watered.  Returns true if [since]'s date > date of last
-     * watering + watering Interval; false otherwise.
-     */
-    fun shouldBeWatered(since: DateTimePeriod, lastWateringDate: DateTimePeriod) =
-        since.days > lastWateringDate.days + wateringInterval
-
-    override fun toString() = name
-}
+/**
+ * Determines if the plant should be watered.  Returns true if [since]'s date > date of last
+ * watering + watering Interval; false otherwise.
+ */
+fun Plant.shouldBeWatered(since: DateTimePeriod, lastWateringDate: DateTimePeriod) =
+    since.days > lastWateringDate.days + wateringInterval

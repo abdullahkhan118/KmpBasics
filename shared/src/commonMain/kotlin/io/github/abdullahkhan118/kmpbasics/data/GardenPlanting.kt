@@ -16,6 +16,11 @@
 
 package io.github.abdullahkhan118.kmpbasics.data
 
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
+import androidx.room3.Index
+import androidx.room3.PrimaryKey
 import kotlinx.datetime.DateTimePeriod
 
 /**
@@ -26,32 +31,32 @@ import kotlinx.datetime.DateTimePeriod
  * Declaring the column info allows for the renaming of variables without implementing a
  * database migration, as the column name would not change.
  */
-//@Entity(
-//    tableName = "garden_plantings",
-//    foreignKeys = [
-//        ForeignKey(entity = Plant::class, parentColumns = ["id"], childColumns = ["plant_id"])
-//    ],
-//    indices = [Index("plant_id")]
-//)
+@Entity(
+    tableName = "garden_plantings",
+    foreignKeys = [
+        ForeignKey(entity = Plant::class, parentColumns = ["id"], childColumns = ["plant_id"])
+    ],
+    indices = [Index("plant_id")]
+)
 data class GardenPlanting(
-//    @ColumnInfo(name = "plant_id")
+    @ColumnInfo(name = "plant_id")
     val plantId: String,
 
     /**
      * Indicates when the [Plant] was planted. Used for showing notification when it's time
      * to harvest the plant.
      */
-//    @ColumnInfo(name = "plant_date")
+    @ColumnInfo(name = "plant_date")
     val plantDate: DateTimePeriod = DateTimePeriod(),
 
     /**
      * Indicates when the [Plant] was last watered. Used for showing notification when it's
      * time to water the plant.
      */
-//    @ColumnInfo(name = "last_watering_date")
-    val lastWateringDate: DateTimePeriod = DateTimePeriod()
-) {
-//    @PrimaryKey(autoGenerate = true)
-//    @ColumnInfo(name = "id")
-//    var gardenPlantingId: Long = 0
-}
+    @ColumnInfo(name = "last_watering_date")
+    val lastWateringDate: DateTimePeriod = DateTimePeriod(),
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    val gardenPlantingId: Long = 0
+)
